@@ -1,12 +1,11 @@
 package chromem
 
 import (
-	"cmp"
 	"container/heap"
 	"context"
 	"fmt"
-	"runtime"
-	"slices"
+    slices "golang.org/x/exp/slices"
+    "runtime"
 	"strings"
 	"sync"
 )
@@ -77,7 +76,13 @@ func (d *maxDocSims) values() []docSim {
 	d.lock.RLock()
 	defer d.lock.RUnlock()
 	slices.SortFunc(d.h, func(i, j docSim) int {
-		return cmp.Compare(j.similarity, i.similarity)
+        //降序
+        if i.similarity < j.similarity {
+            return 1
+        } else if i.similarity > j.similarity {
+            return -1
+        }
+		return 0
 	})
 	return d.h
 }
@@ -175,8 +180,8 @@ func getMostSimilarDocs(ctx context.Context, queryVectors []float32, docs []*Doc
 
 	var sharedErr error
 	sharedErrLock := sync.Mutex{}
-	ctx, cancel := context.WithCancelCause(ctx)
-	defer cancel(nil)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	setSharedErr := func(err error) {
 		sharedErrLock.Lock()
 		defer sharedErrLock.Unlock()
@@ -184,7 +189,7 @@ func getMostSimilarDocs(ctx context.Context, queryVectors []float32, docs []*Doc
 		if sharedErr == nil {
 			sharedErr = err
 			// Cancel the operation for all other goroutines.
-			cancel(sharedErr)
+			cancel()
 		}
 	}
 

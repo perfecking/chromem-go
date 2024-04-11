@@ -3,8 +3,8 @@ package chromem
 import (
 	"context"
 	"errors"
-	"math/rand"
-	"slices"
+	"golang.org/x/exp/slices"
+"math/rand"
 	"strconv"
 	"testing"
 )

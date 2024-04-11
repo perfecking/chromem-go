@@ -1,8 +1,8 @@
 package chromem
 
 import (
-	"reflect"
-	"slices"
+	"golang.org/x/exp/slices"
+    "reflect"
 	"testing"
 )
 

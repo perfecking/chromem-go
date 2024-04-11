@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"path/filepath"
-	"slices"
+	"golang.org/x/exp/slices"
+    "path/filepath"
 	"sync"
 )
 
@@ -156,8 +156,9 @@ func (c *Collection) AddDocuments(ctx context.Context, documents []Document, con
 
 	var sharedErr error
 	sharedErrLock := sync.Mutex{}
-	ctx, cancel := context.WithCancelCause(ctx)
-	defer cancel(nil)
+    //TODO 改成了
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	setSharedErr := func(err error) {
 		sharedErrLock.Lock()
 		defer sharedErrLock.Unlock()
@@ -165,7 +166,7 @@ func (c *Collection) AddDocuments(ctx context.Context, documents []Document, con
 		if sharedErr == nil {
 			sharedErr = err
 			// Cancel the operation for all other goroutines.
-			cancel(sharedErr)
+			cancel()
 		}
 	}
 

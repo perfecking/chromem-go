@@ -2,11 +2,11 @@ package chromem
 
 import (
 	"context"
-	"math/rand"
+	"golang.org/x/exp/slices"
+"math/rand"
 	"os"
 	"path/filepath"
 	"reflect"
-	"slices"
 	"testing"
 )
 
