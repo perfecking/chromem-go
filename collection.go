@@ -309,7 +309,7 @@ func (c *Collection) QueryEmbedding(ctx context.Context, queryEmbedding []float3
 	c.documentsLock.RLock()
 	defer c.documentsLock.RUnlock()
 	if nResults > len(c.documents) {
-		return nil, errors.New("nResults must be <= the number of documents in the collection")
+		nResults = len(c.documents)
 	}
 
 	if len(c.documents) == 0 {
